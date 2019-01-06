@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorAccent">#ffd81b60</color>
+    <color name="colorBlack">#ff000000</color>
+    <color name="colorCount">#ff000000</color>
+    <color name="colorDarkGray">#ff8a8a8a</color>
+    <color name="colorLightGray">#ffeaeaea</color>
+    <color name="colorLightMint">#1000c0aa</color>
+    <color name="colorMint">#ff00c0aa</color>
+    <color name="colorPrice">#ff000000</color>
+    <color name="colorPrimary">#ff009591</color>
+    <color name="colorPrimaryDark">#ff009591</color>
+    <color name="colorProduct">#ff000000</color>
+    <color name="colorStandard">#36000000</color>
+    <color name="colorTitle">#8c000000</color>
+    <color name="colorTransparent">#00ffffff</color>
+    <color name="colorUnit">#36000000</color>
+    <color name="colorWhite">#ffffffff</color>
+    <color name="editEntry">#ff000000</color>
+    <color name="editTitle">#80000000</color>
 </resources>
