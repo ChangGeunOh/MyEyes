@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="category">
+        <item>서비스</item>
+        <item>장비</item>
+        <item>자재</item>
+        <item>노무비</item>
+        <item>기타</item>
+    </string-array>
+</resources>
