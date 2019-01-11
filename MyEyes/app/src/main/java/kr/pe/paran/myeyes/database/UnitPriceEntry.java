@@ -12,5 +12,7 @@ public class UnitPriceEntry implements BaseColumns {
     public static final String UNIT_COLUMN      = "Unit";
     public static final String PRICE_COLUMN     = "Price";
 
+
+
     // 노무비|인건비|중급기술자|인|180000
 }

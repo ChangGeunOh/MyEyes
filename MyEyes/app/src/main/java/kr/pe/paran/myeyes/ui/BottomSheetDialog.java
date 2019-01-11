@@ -24,7 +24,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment {
 
         Spinner spinnerCategory = view.findViewById(R.id.spinner_dialog_category);
         Spinner spinnerProduct  = view.findViewById(R.id.spinner_dialog_product);
-        /* test. */
+        /* test.         */
 
 
 
