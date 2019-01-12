@@ -1,6 +1,8 @@
 package kr.pe.paran.myeyes.database;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
@@ -10,6 +12,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+
+import kr.pe.paran.myeyes.model.ProductPrice;
 
 public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
 
@@ -42,7 +46,7 @@ public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+        readLineFile("UnitPrice.txt");
     }
 
     @Override
@@ -52,7 +56,7 @@ public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
     }
 
 
-    private void readLineFile(String filename) {
+    public void readLineFile(String filename) {
 
         BufferedReader bufferedReader = null;
         try (
@@ -60,7 +64,8 @@ public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
             bufferedReader = new BufferedReader(inputStreamReader);
             String strLine;
             while ((strLine = bufferedReader.readLine()) != null) {
-                Log.i(TAG, strLine);
+                String[] price = strLine.split("\\|");          // Length Size 4, 5
+                insertProductPrice(new ProductPrice(price[0], price[1], price[2], price[3], (price.length == 4 ? Integer.valueOf(price[4]) : 0)));
             }
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -76,6 +81,37 @@ public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
                 }
             }
         }
+    }
 
+    private long insertProductPrice(ProductPrice productPrice) {
+        return getWritableDatabase().insert(UnitPriceEntry.TABLE_NAME, null, getContentValues(productPrice));
+    }
+
+    private ContentValues getContentValues(ProductPrice productPrice) {
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(UnitPriceEntry.CATEGORY_COLUMN, productPrice.category);
+        contentValues.put(UnitPriceEntry.PRODUCT_COLUMN, productPrice.product);
+        contentValues.put(UnitPriceEntry.STANDARD_COLUMN, productPrice.standard);
+        contentValues.put(UnitPriceEntry.UNIT_COLUMN, productPrice.unit);
+        contentValues.put(UnitPriceEntry.PRICE_COLUMN, productPrice.price);
+
+        return contentValues;
+    }
+
+    public Cursor getProductPrices() {
+        return getWritableDatabase().query(UnitPriceEntry.TABLE_NAME, null, null, null, null, null, null);
+    }
+
+    public ProductPrice getProductPrice(Cursor cursor) {
+
+        ProductPrice productPrice = new ProductPrice();
+        productPrice.category   = cursor.getString(cursor.getColumnIndex(UnitPriceEntry.CATEGORY_COLUMN));
+        productPrice.product    = cursor.getString(cursor.getColumnIndex(UnitPriceEntry.PRODUCT_COLUMN));
+        productPrice.standard   = cursor.getString(cursor.getColumnIndex(UnitPriceEntry.STANDARD_COLUMN));
+        productPrice.unit       = cursor.getString(cursor.getColumnIndex(UnitPriceEntry.UNIT_COLUMN));
+        productPrice.price      = cursor.getInt(cursor.getColumnIndex(UnitPriceEntry.PRICE_COLUMN));
+
+        return productPrice;
     }
 }

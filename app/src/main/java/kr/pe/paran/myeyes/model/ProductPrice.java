@@ -1,6 +1,6 @@
 package kr.pe.paran.myeyes.model;
 
-public class UnitProduct {
+public class ProductPrice {
 
     public int _id;
 
@@ -8,9 +8,12 @@ public class UnitProduct {
     public String product;
     public String standard;
     public String unit;
-    public String price;
+    public int price;
 
-    public UnitProduct(String category, String product, String standard, String unit, String price) {
+    public ProductPrice() {
+    }
+
+    public ProductPrice(String category, String product, String standard, String unit, int price) {
         this.category = category;
         this.product = product;
         this.standard = standard;

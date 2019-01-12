@@ -1,8 +1,10 @@
 package kr.pe.paran.myeyes;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -13,10 +15,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import kr.pe.paran.myeyes.database.UnitPriceSQLiteOpenHelper;
+import kr.pe.paran.myeyes.model.ProductPrice;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String    TAG         = getClass().getSimpleName();
+
+
+    private UnitPriceSQLiteOpenHelper mUnitPriceDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +52,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        mUnitPriceDbHelper = new UnitPriceSQLiteOpenHelper(this);
+        Cursor  cursor = mUnitPriceDbHelper.getProductPrices();
+        while (cursor.moveToNext()) {
+            ProductPrice    productPrice = mUnitPriceDbHelper.getProductPrice(cursor);
+            Log.i(TAG, productPrice.toString());
+        }
     }
 
     @Override
