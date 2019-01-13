@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.ViewDebug;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import kr.pe.paran.myeyes.database.EstimateSQLiteOpenHelper;
 import kr.pe.paran.myeyes.database.UnitPriceSQLiteOpenHelper;
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity
 
     private ListView                    mCustomListView;
     private CustomerAdapter             mCustomerAdapter;
+    private FloatingActionButton        mFab_add;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,13 +58,14 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab_add = (FloatingActionButton) findViewById(R.id.fab_add);
-        fab_add.setOnClickListener(new View.OnClickListener() {
+        mFab_add = (FloatingActionButton) findViewById(R.id.fab_add);
+        mFab_add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showBottomDialog(null);
             }
         });
+        mFab_add.setVisibility(View.GONE);
 
         FloatingActionButton fab_new = findViewById(R.id.fab_new);
         fab_new.setOnClickListener(new View.OnClickListener() {
@@ -221,5 +226,14 @@ public class MainActivity extends AppCompatActivity
 
         mEstimate           = mEstimateDbHelper.getEsitmate(reg_date);
         mProductListAdpater.setProductPrices(mEstimate.productPrices);
+
+        long total = 0;
+        for (ProductPrice productPrice : mEstimate.productPrices) {
+            total += productPrice.sum;
+            Log.i(TAG, productPrice + " > " + total);
+        }
+        ((TextView) findViewById(R.id.tv_sum_price)).setText(Utility.getFormated(total) + "원");
+
+        mFab_add.setVisibility(View.VISIBLE);
     }
 }
