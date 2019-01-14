@@ -8,4 +8,11 @@
     tools:context=".ui.UnitActivity"
     tools:showIn="@layout/activity_unit">
 
+    <ListView
+        android:id="@+id/listview_unit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_unit"/>
+
+
 </android.support.constraint.ConstraintLayout>

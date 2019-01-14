@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -11,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_ractangle"
-        app:layout_constraintBottom_toTopOf="@id/btn_dialog_add" />
+        app:layout_constraintBottom_toBottomOf="@id/til_unit_price" />
 
     <Spinner
         android:id="@+id/spinner_unit_category"
@@ -29,6 +28,8 @@
         android:id="@+id/til_unit_product"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintLeft_toLeftOf="@id/spinner_unit_category"
         app:layout_constraintTop_toBottomOf="@id/spinner_unit_category">
 
@@ -46,6 +47,8 @@
         android:id="@+id/til_unit_standard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintLeft_toLeftOf="@id/spinner_unit_category"
         app:layout_constraintTop_toBottomOf="@id/til_unit_product">
 
@@ -61,16 +64,15 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_unit_unit"
-        android:layout_width="100dp"
-        android:layout_marginLeft="100dp"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/til_unit_standard"
-        app:layout_constraintRight_toLeftOf="@id/til_unit_price">
+        android:layout_marginRight="10dp"
+        app:layout_constraintLeft_toLeftOf="@id/til_unit_standard"
+        app:layout_constraintTop_toBottomOf="@id/til_unit_standard">
 
         <EditText
             android:id="@+id/et_unit_unit"
-            android:layout_width="50dp"
+            android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:hint="단위"
             android:inputType="numberDecimal" />
@@ -79,8 +81,10 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/til_unit_price"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         app:layout_constraintLeft_toRightOf="@id/til_unit_unit"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/til_unit_standard">
@@ -91,14 +95,14 @@
             android:layout_height="wrap_content"
             android:hint="제품가격"
             android:inputType="numberDecimal"
-            android:textAlignment="viewStart" />
+            android:textAlignment="viewEnd" />
 
     </android.support.design.widget.TextInputLayout>
 
 
     <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_unit_canel"
-        android:layout_width="0.0dip"
+        android:id="@+id/btn_unit_remove"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:layout_marginTop="10.0dip"
@@ -109,7 +113,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_weight="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/btn_dialog_add"
+        app:layout_constraintRight_toLeftOf="@id/btn_unit_add"
         app:layout_constraintTop_toBottomOf="@id/til_unit_unit" />
 
     <android.support.v7.widget.AppCompatButton
@@ -117,15 +121,15 @@
         android:layout_width="0.0dip"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
-        android:layout_marginTop="10.0dip"
         android:backgroundTint="@color/colorMint"
         android:text="추가하기"
         android:textColor="@color/colorWhite"
         android:textStyle="bold"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_weight="1.0"
-        app:layout_constraintLeft_toRightOf="@id/btn_unit_canel"
+        app:layout_constraintLeft_toRightOf="@id/btn_unit_remove"
         app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBaseline_toBaselineOf="@id/btn_unit_remove"
         app:layout_constraintTop_toBottomOf="@id/til_unit_unit" />
 
 </android.support.constraint.ConstraintLayout>

@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_price) {
             Intent intent = new Intent(this, UnitActivity.class);
             startActivity(intent);
-        } else {
+        } else if(id == R.id.action_info) {
             Intent intent = new Intent(this, InfoActivity.class);
             startActivity(intent);
         }

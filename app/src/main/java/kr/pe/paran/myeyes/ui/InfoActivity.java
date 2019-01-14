@@ -25,7 +25,7 @@ public class InfoActivity extends AppCompatActivity {
         try {
             PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             String version  = packageInfo.versionName;
-            ((TextView) findViewById(R.id.tv_version)).setText(version);
+            ((TextView) findViewById(R.id.tv_version)).setText("Version " + version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

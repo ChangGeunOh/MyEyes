@@ -141,6 +141,19 @@ public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
                 UnitPriceEntry.CATEGORY_COLUMN + " ASC, " + UnitPriceEntry.PRODUCT_COLUMN + " ASC");
     }
 
+    public long insertUnitPrice(UnitPrice unitPrice) {
+        return getWritableDatabase().insert(UnitPriceEntry.TABLE_NAME, null, getContentValues(unitPrice));
+    }
+
+    public long updateUnitPrice(UnitPrice unitPrice) {
+        Log.i(TAG, "---------------> update");
+        return getWritableDatabase().update(UnitPriceEntry.TABLE_NAME, getContentValues(unitPrice), UnitPriceEntry._ID + " = " + unitPrice._id, null);
+    }
+
+    public long deleteUnitPrice(int _id) {
+        return getWritableDatabase().delete(UnitPriceEntry.TABLE_NAME, UnitPriceEntry._ID + " = " + _id, null);
+    }
+
     public void onTest() {
 
         Log.i(TAG, "onTest");

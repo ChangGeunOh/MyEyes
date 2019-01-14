@@ -3,6 +3,7 @@ package kr.pe.paran.myeyes.ui;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -14,6 +15,8 @@ import kr.pe.paran.myeyes.database.UnitPriceEntry;
 import kr.pe.paran.myeyes.model.UnitPrice;
 
 public class UnitAdapter extends CursorAdapter {
+
+    private final String    TAG = getClass().getSimpleName();
 
     private String          mBeforeCategory = "";
 
@@ -30,7 +33,7 @@ public class UnitAdapter extends CursorAdapter {
         viewHolder.tvSection    = view.findViewById(R.id.tv_unit_section);
         viewHolder.tvPrice      = view.findViewById(R.id.tv_unit_price);
         viewHolder.tvProduct    = view.findViewById(R.id.tv_unit_prodct);
-        viewHolder.tvStandard   = view.findViewById(R.id.tv_standard);
+        viewHolder.tvStandard   = view.findViewById(R.id.tv_unit_standard);
 
         view.setTag(viewHolder);
 
@@ -42,19 +45,26 @@ public class UnitAdapter extends CursorAdapter {
 
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         UnitPrice   unitPrice = getUnitPrice(cursor);
-        if (mBeforeCategory.equals(unitPrice)) {
-            viewHolder.tvSection.setVisibility(View.GONE);
+        Log.i(TAG, unitPrice.toString());
+
+        viewHolder.tvSection.setVisibility(View.VISIBLE);
+        if (!cursor.isFirst()) {
+            cursor.moveToPrevious();
+            UnitPrice beforeUnitprice = getUnitPrice(cursor);
+            if (unitPrice.category.equals(beforeUnitprice.category)) {
+                viewHolder.tvSection.setVisibility(View.GONE);
+            }
+            cursor.moveToNext();
         }
-        else {
-            viewHolder.tvSection.setVisibility(View.INVISIBLE);
-            viewHolder.tvSection.setText(unitPrice.category);
-        }
-        viewHolder.tvProduct.setText(unitPrice.price);
+
+        viewHolder.tvSection.setText(unitPrice.category);
+        viewHolder.tvProduct.setText(unitPrice.product);
         viewHolder.tvStandard.setText(unitPrice.standard);
-        viewHolder.tvPrice.setText(Utility.getFormated(unitPrice.price)+"원");
+        viewHolder.tvPrice.setText(Utility.getFormated(unitPrice.price) + " 원");
+        mBeforeCategory = unitPrice.category;
     }
 
-    private UnitPrice getUnitPrice(Cursor cursor) {
+    public UnitPrice getUnitPrice(Cursor cursor) {
 
         UnitPrice unitPrice = new UnitPrice();
         unitPrice._id       = cursor.getInt(cursor.getColumnIndex(UnitPriceEntry._ID));
@@ -67,6 +77,10 @@ public class UnitAdapter extends CursorAdapter {
         return unitPrice;
     }
 
+    @Override
+    public Object getItem(int position) {
+        return super.getItem(position);
+    }
 
     private static class ViewHolder {
         public TextView    tvSection;

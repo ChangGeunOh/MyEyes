@@ -9,7 +9,6 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/action_items"
         android:icon="@drawable/ic_more_vert_white_48"
         android:orderInCategory="101"
         android:title="Info"
