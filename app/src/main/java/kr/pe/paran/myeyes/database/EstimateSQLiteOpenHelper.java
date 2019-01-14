@@ -43,7 +43,7 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
     public EstimateSQLiteOpenHelper(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
         this.mContext = context;
-        onTest();
+//        onTest();
     }
 
     @Override
@@ -72,7 +72,7 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
         }
 
         while(cursor.moveToNext()) {
-            ProductPrice    productPrice = new ProductPrice();
+            ProductPrice productPrice = new ProductPrice();
             productPrice._id        = cursor.getInt(cursor.getColumnIndex(EstimateEntry._ID));
             productPrice.category   = cursor.getString(cursor.getColumnIndex(EstimateEntry.CATEGORY_COLUMN));
             productPrice.product    = cursor.getString(cursor.getColumnIndex(EstimateEntry.PRODUCT_COLUMN));
@@ -88,6 +88,8 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
     }
     
     public long insertProduct(String customer, ProductPrice productPrice, String reg_date) {
+
+        if (customer == null) return  -1;
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(EstimateEntry.CUSTOMER_COLUMN, customer);
@@ -116,13 +118,11 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
                 null,
                 EstimateEntry.REG_DATE_COLUMN + " DESC",
                 null);
-        Log.i(TAG, "Count>" + cursor.getCount());
-
         while (cursor.moveToNext()) {
             Customer customer = new Customer();
             customer.customer = cursor.getString(cursor.getColumnIndex(EstimateEntry.CUSTOMER_COLUMN));
             customer.reg_date = cursor.getString(cursor.getColumnIndex(EstimateEntry.REG_DATE_COLUMN));
-            customers.add(customer);
+            if (customer.customer != null) customers.add(customer);
         }
 
         return customers;

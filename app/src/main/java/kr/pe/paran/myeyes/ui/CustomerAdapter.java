@@ -17,7 +17,7 @@ public class CustomerAdapter extends BaseAdapter {
 
     private final String    TAG = getClass().getSimpleName();
 
-    private Context                 mContext;
+    private Context             mContext;
     private ArrayList<Customer> mCustomers;
 
     public CustomerAdapter(Context context, ArrayList<Customer> customers) {

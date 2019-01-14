@@ -1,5 +1,6 @@
 package kr.pe.paran.myeyes;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import kr.pe.paran.myeyes.database.EstimateSQLiteOpenHelper;
 import kr.pe.paran.myeyes.database.UnitPriceSQLiteOpenHelper;
 import kr.pe.paran.myeyes.model.Customer;
@@ -27,26 +30,27 @@ import kr.pe.paran.myeyes.model.UnitPrice;
 import kr.pe.paran.myeyes.ui.BottomSheetDialog;
 import kr.pe.paran.myeyes.ui.CustomerAdapter;
 import kr.pe.paran.myeyes.ui.CustomerDialog;
+import kr.pe.paran.myeyes.ui.InfoActivity;
 import kr.pe.paran.myeyes.ui.ProductListAdpater;
+import kr.pe.paran.myeyes.ui.UnitActivity;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, BottomSheetDialog.BottomSheetListener, CustomerDialog.CustomerDialogListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
+        implements BottomSheetDialog.BottomSheetListener, CustomerDialog.CustomerDialogListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
 
-    private final String    TAG         = getClass().getSimpleName();
+    private final String TAG = getClass().getSimpleName();
 
-    private Estimate        mEstimate   = null;
+    private Estimate mEstimate = null;
 
 
-    private UnitPriceSQLiteOpenHelper   mUnitPriceDbHelper;
-    private EstimateSQLiteOpenHelper    mEstimateDbHelper;
+    private UnitPriceSQLiteOpenHelper mUnitPriceDbHelper;
+    private EstimateSQLiteOpenHelper mEstimateDbHelper;
 
-    private ListView                    mProductListView;
-    private ProductListAdpater          mProductListAdpater;
+    private ListView mProductListView;
+    private ProductListAdpater mProductListAdpater;
 
-    private ListView                    mCustomListView;
-    private CustomerAdapter             mCustomerAdapter;
-    private FloatingActionButton        mFab_add;
-
+    private ListView mCustomListView;
+    private CustomerAdapter mCustomerAdapter;
+    private FloatingActionButton mFab_add;
 
 
     @Override
@@ -83,22 +87,22 @@ public class MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
-        mProductListView   = findViewById(R.id.listview);
+        mProductListView = findViewById(R.id.listview);
         mProductListAdpater = new ProductListAdpater(this);
         mProductListView.setAdapter(mProductListAdpater);
         mProductListView.setOnItemLongClickListener(this);
 
-        mUnitPriceDbHelper  = new UnitPriceSQLiteOpenHelper(this);
-        mEstimateDbHelper   = new EstimateSQLiteOpenHelper(this);
+        mUnitPriceDbHelper = new UnitPriceSQLiteOpenHelper(this);
+        mEstimateDbHelper = new EstimateSQLiteOpenHelper(this);
 
         mCustomListView = findViewById(R.id.listview_menu);
         mCustomerAdapter = new CustomerAdapter(this, mEstimateDbHelper.getCustomers());
         mCustomListView.setAdapter(mCustomerAdapter);
+
         mCustomListView.setOnItemClickListener(this);
         mCustomListView.setOnItemLongClickListener(this);
+
+
     }
 
     @Override
@@ -126,33 +130,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+        if (id == R.id.action_price) {
+            Intent intent = new Intent(this, UnitActivity.class);
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(this, InfoActivity.class);
+            startActivity(intent);
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -165,8 +151,7 @@ public class MainActivity extends AppCompatActivity
                 // EsitamteUpdate...
                 mEstimateDbHelper.updateEstimate(productPrice._id, productPrice);
                 refresh(mEstimate.custmer, mEstimate.reg_date);
-            }
-            else {
+            } else {
                 Log.i(TAG, productPrice.toString());
                 mEstimate.addProduct(productPrice);
                 mEstimateDbHelper.insertProduct(mEstimate.custmer, productPrice, mEstimate.reg_date);
@@ -192,8 +177,7 @@ public class MainActivity extends AppCompatActivity
         if (adapterView == mProductListView) {
             ProductPrice productPrice = mProductListAdpater.getItem(i);
             showBottomDialog(productPrice);
-        }
-        else {
+        } else {
             //
             Customer customer = mCustomerAdapter.getItem(i);
             deleteEstimate(customer);
@@ -224,8 +208,10 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        mEstimate           = mEstimateDbHelper.getEsitmate(reg_date);
+        mEstimate = mEstimateDbHelper.getEsitmate(reg_date);
         mProductListAdpater.setProductPrices(mEstimate.productPrices);
+        mEstimate.custmer = customer;
+        mEstimate.reg_date= reg_date;
 
         long total = 0;
         for (ProductPrice productPrice : mEstimate.productPrices) {
@@ -233,6 +219,9 @@ public class MainActivity extends AppCompatActivity
             Log.i(TAG, productPrice + " > " + total);
         }
         ((TextView) findViewById(R.id.tv_sum_price)).setText(Utility.getFormated(total) + "원");
+
+        mCustomerAdapter = new CustomerAdapter(this, mEstimateDbHelper.getCustomers());
+        mCustomListView.setAdapter(mCustomerAdapter);
 
         mFab_add.setVisibility(View.VISIBLE);
     }

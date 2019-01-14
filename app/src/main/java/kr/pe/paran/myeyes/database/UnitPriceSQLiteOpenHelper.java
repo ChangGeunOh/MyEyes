@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
 
     private static final String     FILE_NAME   = "UnitPrice.txt";
     private static final String     DB_NAME     = "UnitPrice.db";
-    private static final int        DB_VERSION  = 3;
+    private static final int        DB_VERSION  = 4;
 
     private Context                 mContext;
 
@@ -130,4 +131,30 @@ public class UnitPriceSQLiteOpenHelper extends SQLiteOpenHelper {
         return productPrices;
     }
 
+    public Cursor getUnitPrices() {
+        return getWritableDatabase().query(UnitPriceEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                UnitPriceEntry.CATEGORY_COLUMN + " ASC, " + UnitPriceEntry.PRODUCT_COLUMN + " ASC");
+    }
+
+    public void onTest() {
+
+        Log.i(TAG, "onTest");
+
+        Cursor  cursor  = getWritableDatabase().query(UnitPriceEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null,
+                null,
+                UnitPriceEntry.CATEGORY_COLUMN + " ASC, " + UnitPriceEntry.PRODUCT_COLUMN + " ASC");
+
+        while (cursor.moveToNext()) {
+            Log.i(TAG, getProductPrice(cursor).toString());
+        }
+    }
 }
