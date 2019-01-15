@@ -32,6 +32,7 @@ import kr.pe.paran.myeyes.ui.CustomerAdapter;
 import kr.pe.paran.myeyes.ui.CustomerDialog;
 import kr.pe.paran.myeyes.ui.InfoActivity;
 import kr.pe.paran.myeyes.ui.ProductListAdpater;
+import kr.pe.paran.myeyes.ui.ReportActivity;
 import kr.pe.paran.myeyes.ui.UnitActivity;
 
 public class MainActivity extends AppCompatActivity
@@ -135,6 +136,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         } else if(id == R.id.action_info) {
             Intent intent = new Intent(this, InfoActivity.class);
+            startActivity(intent);
+        } else if(id == R.id.action_report) {
+            Intent intent = new Intent(this, ReportActivity.class);
             startActivity(intent);
         }
 

@@ -1,0 +1,47 @@
+<html>
+<head>
+    <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'>
+    <style>
+	    p {text-align:center; font-size: 10pt; font-weight: bold}
+	    table {border:1px;border-collapse: collapse;}
+		th, td {padding: 2px; font-size:6pt; text-align: center}
+		tr {height: 20px; border-bottom: 1px solid; border-color: #eaeaea}
+		
+		.value_price {text-align: right; padding-right: 4px;}
+		.head_row {height:25px; background-color: #eaeaea}
+		.summary_title {font-size: 8pt; text-align: center; font-weight: bold;}
+		.summary_value {padding-right: 4px; font-size: 8pt; text-align: right; font-weight: bold}
+    </style>
+
+</head>
+<body>
+<p>GiGAEyes 견적서</p>
+<div>
+    <table width='100!'>
+        <colgroup>
+            <col width='15!'/>
+            <col width='20!'/>
+            <col width='25!'/>
+            <col width='15!'/>
+            <col width='10!'/>
+            <col width='15!'/>
+        </colgroup>
+        <thead>
+        <tr class='head_row'>
+            <th>구분</th>
+            <th>상품명</th>
+            <th>규 격</th>
+            <th>단가</th>
+            <th>수량</th>
+            <th>금 액</th>
+        </tr>
+        </thead>
+        %s
+        <tr class='head_row'>
+            <td colspan='3' class='summary_title'>합 계</td>
+            <td colspan='3' class='summary_value'>%s</td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>
