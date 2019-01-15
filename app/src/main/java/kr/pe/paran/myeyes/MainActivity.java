@@ -1,32 +1,26 @@
 package kr.pe.paran.myeyes;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewDebug;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 
 import kr.pe.paran.myeyes.database.EstimateSQLiteOpenHelper;
 import kr.pe.paran.myeyes.database.UnitPriceSQLiteOpenHelper;
 import kr.pe.paran.myeyes.model.Customer;
 import kr.pe.paran.myeyes.model.Estimate;
 import kr.pe.paran.myeyes.model.ProductPrice;
-import kr.pe.paran.myeyes.model.UnitPrice;
 import kr.pe.paran.myeyes.ui.BottomSheetDialog;
 import kr.pe.paran.myeyes.ui.CustomerAdapter;
 import kr.pe.paran.myeyes.ui.CustomerDialog;
@@ -134,12 +128,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.action_price) {
             Intent intent = new Intent(this, UnitActivity.class);
             startActivity(intent);
-        } else if(id == R.id.action_info) {
+        } else if (id == R.id.action_info) {
             Intent intent = new Intent(this, InfoActivity.class);
             startActivity(intent);
-        } else if(id == R.id.action_report) {
-            Intent intent = new Intent(this, ReportActivity.class);
-            startActivity(intent);
+        } else if (id == R.id.action_report) {
+            showReportActivity();
         }
 
         return super.onOptionsItemSelected(item);
@@ -215,7 +208,7 @@ public class MainActivity extends AppCompatActivity
         mEstimate = mEstimateDbHelper.getEsitmate(reg_date);
         mProductListAdpater.setProductPrices(mEstimate.productPrices);
         mEstimate.custmer = customer;
-        mEstimate.reg_date= reg_date;
+        mEstimate.reg_date = reg_date;
 
         long total = 0;
         for (ProductPrice productPrice : mEstimate.productPrices) {
@@ -229,4 +222,20 @@ public class MainActivity extends AppCompatActivity
 
         mFab_add.setVisibility(View.VISIBLE);
     }
+
+    private void showReportActivity() {
+        if (mEstimate != null) {
+            if (mEstimate.productPrices.size() > 0) {
+                Intent intent = new Intent(this, ReportActivity.class);
+                intent.putExtra("Estimate", mEstimate);
+                startActivity(intent);
+            } else {
+                Utility.showMessage(this, "견적서을 작성을 위해 상품을 입력하세요.");
+            }
+        } else {
+            Utility.showMessage(this, "견적서을 작성을 위해 상품을 입력하세요.");
+        }
+    }
+
+
 }

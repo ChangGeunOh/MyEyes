@@ -1,8 +1,9 @@
 package kr.pe.paran.myeyes.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Estimate {
+public class Estimate implements Serializable {
 
     public String custmer;
     public String reg_date;

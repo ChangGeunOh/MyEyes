@@ -1,5 +1,8 @@
 package kr.pe.paran.myeyes;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,5 +23,14 @@ public class Utility {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         return simpleDateFormat.format(new Date());
+    }
+
+    public static String getFilenName(String name) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("(yyyyMMdd) ");
+        return simpleDateFormat.format(new Date()) + name + ".pdf";
+    }
+
+    public static void showMessage(Context context, String message) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
     }
 }
