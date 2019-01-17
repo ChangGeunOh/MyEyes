@@ -144,15 +144,15 @@ public class MainActivity extends AppCompatActivity
         Log.i(TAG, "onAddProductPrice>" + (mEstimate == null));
 
         if (mEstimate != null) {
-            if (productPrice._id > 1) {
+            if (productPrice._id > 0) {
                 // EsitamteUpdate...
                 mEstimateDbHelper.updateEstimate(productPrice._id, productPrice);
-                refresh(mEstimate.custmer, mEstimate.reg_date);
             } else {
                 Log.i(TAG, productPrice.toString());
                 mEstimate.addProduct(productPrice);
                 mEstimateDbHelper.insertProduct(mEstimate.custmer, productPrice, mEstimate.reg_date);
             }
+            refresh(mEstimate.custmer, mEstimate.reg_date);
             mProductListAdpater.setProductPrices(mEstimate.productPrices);
         }
     }
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity
         if (mEstimate != null) {
             if (mEstimate.productPrices.size() > 0) {
                 Intent intent = new Intent(this, ReportActivity.class);
-                intent.putExtra("Estimate", mEstimate);
+                intent.putExtra("Estimate", mEstimate.reg_date);
                 startActivity(intent);
             } else {
                 Utility.showMessage(this, "견적서을 작성을 위해 상품을 입력하세요.");

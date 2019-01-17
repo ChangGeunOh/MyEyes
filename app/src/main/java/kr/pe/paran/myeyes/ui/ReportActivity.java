@@ -23,6 +23,7 @@ import java.util.ArrayList;
 
 import kr.pe.paran.myeyes.R;
 import kr.pe.paran.myeyes.Utility;
+import kr.pe.paran.myeyes.database.EstimateSQLiteOpenHelper;
 import kr.pe.paran.myeyes.model.Estimate;
 import kr.pe.paran.myeyes.model.ProductPrice;
 
@@ -44,12 +45,17 @@ public class ReportActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        final Estimate estimate = (Estimate) getIntent().getSerializableExtra("Estimate");
+//        final Estimate estimate = (Estimate) getIntent().getSerializableExtra("Estimate");
 //        final Estimate estimate = getEstimate();
-        if (estimate == null) {
+
+        String reg_date = getIntent().getStringExtra("Estimate");
+        if (reg_date == null) {
             Utility.showMessage(this, "상품정보가 없습니다.");
             finish();
         }
+        EstimateSQLiteOpenHelper estimateSQLiteOpenHelper = new EstimateSQLiteOpenHelper(this);
+        final Estimate estimate = estimateSQLiteOpenHelper.getEsitmate(reg_date);
+
 
         setTitle(estimate.custmer);
 

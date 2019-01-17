@@ -2,7 +2,7 @@ package kr.pe.paran.myeyes.model;
 
 public class UnitPrice {
 
-    public int _id;
+    public int _id      = -1;
 
     public String category;
     public String product;
