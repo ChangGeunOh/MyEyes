@@ -7,4 +7,11 @@
         <item>노무비</item>
         <item>기타</item>
     </string-array>
+
+    <string-array name="period">
+        <item>1년 약정</item>
+        <item>2년 약정</item>
+        <item>3년 약정</item>
+        <item>4년 이상</item>
+    </string-array>
 </resources>

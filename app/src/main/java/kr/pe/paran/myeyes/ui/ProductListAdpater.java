@@ -64,7 +64,14 @@ public class ProductListAdpater extends BaseAdapter {
         ViewHolder  viewHolder = (ViewHolder) view.getTag();
         viewHolder.tvProduct.setText(productPrice.product);
         viewHolder.tvStandard.setText(productPrice.standard);
-        viewHolder.tvCount.setText("수량 : " + Utility.getFormated((productPrice).count));
+        if (productPrice.product.equals("인건비")) {
+            viewHolder.tvCount.setText("단가 : " + Utility.getFormated(productPrice.price) +
+                    "원, 수량 : " + Utility.getFormated(productPrice.count) +
+                    " x " + Utility.getFormated(productPrice.subCount));
+        }
+        else {
+            viewHolder.tvCount.setText("단가 : " + Utility.getFormated(productPrice.price) + "원, 수량 : " + Utility.getFormated(productPrice.count));
+        }
         viewHolder.tvSum.setText(Utility.getFormated(productPrice.sum) + "원");
 
         return view;

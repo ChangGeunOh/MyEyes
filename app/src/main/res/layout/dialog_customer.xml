@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:padding="20.0dip">
+    android:orientation="vertical"
+    android:paddingLeft="15dp"
+    android:paddingTop="20dp"
+    android:paddingRight="20dp">
+
+
+    <Spinner
+        android:id="@+id/spinner_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
     <android.support.design.widget.TextInputLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10.0dip">
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="15dip">
 
         <EditText
             android:id="@+id/dialog_customer"
@@ -17,4 +28,6 @@
             android:hint="고객명"
             android:maxLines="1" />
     </android.support.design.widget.TextInputLayout>
+
+
 </LinearLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
@@ -58,8 +57,8 @@
         android:id="@+id/tv_prouct_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="10.0dip"
-        android:paddingRight="10.0dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
         android:text="1"
         android:textColor="@color/colorCount"
         android:textSize="20.0sp"
@@ -76,15 +75,61 @@
         app:layout_constraintBottom_toBottomOf="@id/btn_remove_number"
         app:layout_constraintLeft_toRightOf="@id/tv_prouct_count" />
 
+    <ImageView
+        android:id="@+id/btn_remove_number2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/ic_remove_number"
+        app:layout_constraintLeft_toRightOf="@id/btn_add_number"
+        app:layout_constraintTop_toBottomOf="@id/view_dialog_line" />
+
+    <TextView
+        android:id="@+id/tv_prouct_count2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
+        android:text="1"
+        android:textColor="@color/colorCount"
+        android:textSize="20.0sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/btn_remove_number"
+        app:layout_constraintLeft_toRightOf="@id/btn_remove_number2" />
+
+
+    <TextView
+        android:id="@+id/tv_product_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorDarkGray"
+        android:textSize="14sp"
+        android:layout_marginTop="10.0dip"
+        android:layout_marginLeft="3dp"
+        android:text="단가 : 8,900 x 수량 : 8"
+        app:layout_constraintLeft_toLeftOf="@id/view_dialog_line"
+        app:layout_constraintTop_toBottomOf="@id/btn_remove_number"/>
+
+    <ImageView
+        android:id="@+id/btn_add_number2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5.0dip"
+        android:src="@drawable/ic_add_number"
+        app:layout_constraintBottom_toBottomOf="@id/btn_remove_number"
+        app:layout_constraintLeft_toRightOf="@id/tv_prouct_count2" />
+
+
     <TextView
         android:id="@+id/tv_dialog_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="180,000"
         android:textColor="@color/colorPrice"
-        android:textSize="18.0sp"
+        android:textSize="20.0sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/btn_remove_number"
+        app:layout_constraintBottom_toBottomOf="@id/tv_product_price"
         app:layout_constraintRight_toLeftOf="@id/tv_dialog_unit" />
 
     <TextView
@@ -94,7 +139,7 @@
         android:text="원"
         android:textColor="@color/colorUnit"
         android:textSize="14.0sp"
-        app:layout_constraintBottom_toBottomOf="@id/btn_remove_number"
+        app:layout_constraintBottom_toBottomOf="@id/tv_dialog_price"
         app:layout_constraintRight_toRightOf="@id/view_dialog_line" />
 
     <android.support.v7.widget.AppCompatButton
@@ -111,7 +156,7 @@
         app:layout_constraintHorizontal_weight="1.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/btn_dialog_add"
-        app:layout_constraintTop_toBottomOf="@id/btn_remove_number" />
+        app:layout_constraintTop_toBottomOf="@id/tv_product_price" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/btn_dialog_add"
@@ -127,6 +172,6 @@
         app:layout_constraintHorizontal_weight="1.0"
         app:layout_constraintLeft_toRightOf="@id/btn_dialog_canel"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btn_remove_number" />
+        app:layout_constraintBaseline_toBaselineOf="@id/btn_dialog_canel" />
 
 </android.support.constraint.ConstraintLayout>

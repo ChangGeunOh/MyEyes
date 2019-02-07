@@ -7,25 +7,40 @@
     android:orientation="vertical"
     tools:context=".ui.IntroActivity">
 
+
     <ImageView
+        android:id="@+id/img_intro"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="fitXY"
-        android:src="@drawable/img_intro"/>
+        android:layout_height="match_parent"
+        android:src="@drawable/img_intro" />
 
-
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_permission"
+    <LinearLayout
+        android:id="@+id/layout_permission"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center"
-        android:layout_margin="5dp"
-        android:backgroundTint="@color/colorMint"
-        android:text="권한설정하기"
-        android:textColor="@color/colorWhite"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scaleType="fitXY"
+            android:src="@drawable/img_permission" />
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_permission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/colorMint"
+            android:text="권한설정하기"
+            android:textColor="@color/colorWhite"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 
 </LinearLayout>

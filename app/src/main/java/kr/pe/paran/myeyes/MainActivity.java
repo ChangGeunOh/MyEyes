@@ -25,12 +25,13 @@ import kr.pe.paran.myeyes.ui.BottomSheetDialog;
 import kr.pe.paran.myeyes.ui.CustomerAdapter;
 import kr.pe.paran.myeyes.ui.CustomerDialog;
 import kr.pe.paran.myeyes.ui.InfoActivity;
+import kr.pe.paran.myeyes.ui.NumberDialog;
 import kr.pe.paran.myeyes.ui.ProductListAdpater;
 import kr.pe.paran.myeyes.ui.ReportActivity;
 import kr.pe.paran.myeyes.ui.UnitActivity;
 
 public class MainActivity extends AppCompatActivity
-        implements BottomSheetDialog.BottomSheetListener, CustomerDialog.CustomerDialogListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
+        implements BottomSheetDialog.BottomSheetListener, CustomerDialog.CustomerDialogListener, AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener, NumberDialog.OnNumberInputListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -46,6 +47,10 @@ public class MainActivity extends AppCompatActivity
     private ListView mCustomListView;
     private CustomerAdapter mCustomerAdapter;
     private FloatingActionButton mFab_add;
+    private BottomSheetDialog       mBottomSheetDialog;
+
+    public static int mCntCCTV = 0;
+//    public static Customer mCustomer;
 
 
     @Override
@@ -141,18 +146,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onAddProductPrice(ProductPrice productPrice) {
 
-        Log.i(TAG, "onAddProductPrice>" + (mEstimate == null));
-
         if (mEstimate != null) {
-            if (productPrice._id > 0) {
+            if (productPrice._id > -1) {
                 // EsitamteUpdate...
+                Log.i(TAG, "Update......>" + productPrice.toString());
                 mEstimateDbHelper.updateEstimate(productPrice._id, productPrice);
             } else {
                 Log.i(TAG, productPrice.toString());
                 mEstimate.addProduct(productPrice);
-                mEstimateDbHelper.insertProduct(mEstimate.custmer, productPrice, mEstimate.reg_date);
+                mEstimateDbHelper.insertProduct(new Customer(mEstimate.custmer, mEstimate.period, mEstimate.reg_date), productPrice);
             }
-            refresh(mEstimate.custmer, mEstimate.reg_date);
+            refresh(new Customer(mEstimate.custmer, mEstimate.period, mEstimate.reg_date));
             mProductListAdpater.setProductPrices(mEstimate.productPrices);
         }
     }
@@ -160,12 +164,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRemoveProductPrice(int id) {
         mEstimateDbHelper.deleteProdcutPrice(id);
-        refresh(mEstimate.custmer, mEstimate.reg_date);
+        refresh(new Customer(mEstimate.custmer, mEstimate.period, mEstimate.reg_date));
     }
 
     @Override
-    public void onCompleteCustomer(String name) {
-        refresh(name, Utility.getRegDate());
+    public void onCompleteCustomer(String name, String period) {
+        refresh(new Customer(name, period, Utility.getRegDate()));
     }
 
     @Override
@@ -189,32 +193,38 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showBottomDialog(ProductPrice productPrice) {
-        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(mUnitPriceDbHelper, productPrice);
-        bottomSheetDialog.show(getSupportFragmentManager(), "BottomSheetDialog");
+        mBottomSheetDialog = new BottomSheetDialog(mUnitPriceDbHelper, productPrice, Utility.isDiscount(mEstimate.period));
+        mBottomSheetDialog.show(getSupportFragmentManager(), "BottomSheetDialog");
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         Customer customer = mCustomerAdapter.getItem(i);
-        refresh(customer.customer, customer.reg_date);
+        refresh(customer);
     }
 
-    private void refresh(String customer, String reg_date) {
+    private void refresh(Customer customer) {
 
-        setTitle(customer);
+        setTitle(customer.customer);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-        mEstimate = mEstimateDbHelper.getEsitmate(reg_date);
+        mEstimate = mEstimateDbHelper.getEsitmate(customer.reg_date);
         mProductListAdpater.setProductPrices(mEstimate.productPrices);
-        mEstimate.custmer = customer;
-        mEstimate.reg_date = reg_date;
+        mEstimate.custmer   = customer.customer;
+        mEstimate.period    = customer.period;
+        mEstimate.reg_date  = customer.reg_date;
 
-        long total = 0;
+        long total = 0; int cctvCnt = 0;
         for (ProductPrice productPrice : mEstimate.productPrices) {
             total += productPrice.sum;
-            Log.i(TAG, productPrice + " > " + total);
+            Log.i(TAG, productPrice + " > " + total + ", CCTV cnt>" + cctvCnt);
+            if (productPrice.product.equals("CCTV")) {
+                cctvCnt += productPrice.count;
+            }
         }
+        mCntCCTV = cctvCnt;
+
         ((TextView) findViewById(R.id.tv_sum_price)).setText(Utility.getFormated(total) + "원");
 
         mCustomerAdapter = new CustomerAdapter(this, mEstimateDbHelper.getCustomers());
@@ -230,12 +240,16 @@ public class MainActivity extends AppCompatActivity
                 intent.putExtra("Estimate", mEstimate.reg_date);
                 startActivity(intent);
             } else {
-                Utility.showMessage(this, "견적서을 작성을 위해 상품을 입력하세요.");
+                Utility.showMessage(this, "견적서 작성을 위해 자재등록 후 실행하세요");
             }
         } else {
-            Utility.showMessage(this, "견적서을 작성을 위해 상품을 입력하세요.");
+            Utility.showMessage(this, "고객등록과 자재등록 후 실행하세요.");
         }
     }
 
-
+    @Override
+    public void onInputNumber(int count) {
+        Log.i(TAG, "onInputNumber>" + count);
+        mBottomSheetDialog.setCount(count);
+    }
 }

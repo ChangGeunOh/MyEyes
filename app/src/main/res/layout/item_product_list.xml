@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:padding="10.0dip">
@@ -10,21 +11,22 @@
         android:id="@+id/tv_product"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="제품명"
+        android:text="CCTV"
         android:textColor="@color/colorBlack"
         android:textSize="18.0sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_standard"
+        android:id="@+id/tv_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5.0dip"
-        android:text="제품규격"
+        android:text="2,500 x 27"
         android:textColor="@color/colorDarkGray"
         android:textSize="16.0sp"
-        app:layout_constraintTop_toBottomOf="@id/tv_product" />
+        app:layout_constraintTop_toBottomOf="@id/tv_product"
+        tools:ignore="MissingConstraints" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guidline_vertical"
@@ -34,14 +36,14 @@
         app:layout_constraintGuide_percent="0.5" />
 
     <TextView
-        android:id="@+id/tv_count"
+        android:id="@+id/tv_standard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="수량 : 12"
         android:textColor="@color/colorDarkGray"
         android:textSize="16.0sp"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_product"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintLeft_toRightOf="@id/guidline_vertical" />
 
     <TextView
         android:id="@+id/tv_sum"
@@ -51,7 +53,7 @@
         android:textColor="@color/colorBlack"
         android:textSize="18.0sp"
         android:textStyle="bold"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_standard"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_count"
         app:layout_constraintRight_toRightOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

@@ -54,6 +54,7 @@ public class CustomerAdapter extends BaseAdapter {
 
             ViewHolder viewHolder   = new ViewHolder();
             viewHolder.tvCustomer   = view.findViewById(R.id.tv_customer);
+            viewHolder.tvPeriod     = view.findViewById(R.id.tv_customer_period);
             viewHolder.tvRegData    = view.findViewById(R.id.tv_regdate);
             view.setTag(viewHolder);
         }
@@ -61,6 +62,7 @@ public class CustomerAdapter extends BaseAdapter {
         Customer customer = getItem(i);
         ViewHolder viewHolder = (ViewHolder) view.getTag();
         viewHolder.tvCustomer.setText(customer.customer);
+        viewHolder.tvPeriod.setText("계약기간 : " + customer.period);
         viewHolder.tvRegData.setText(customer.reg_date.substring(0, 16));
 
         return view;
@@ -68,6 +70,7 @@ public class CustomerAdapter extends BaseAdapter {
 
     private static class ViewHolder {
         TextView        tvCustomer;
+        TextView        tvPeriod;
         TextView        tvRegData;
     }
 }

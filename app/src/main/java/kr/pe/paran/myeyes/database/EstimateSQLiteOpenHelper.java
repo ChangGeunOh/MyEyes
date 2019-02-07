@@ -19,7 +19,7 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
     private final String            TAG     = getClass().getSimpleName();
 
     private static final String     DB_NAME     = "Estimate.db";
-    private static final int        DB_VERSION  = 1;
+    private static final int        DB_VERSION  = 3;
 
     private Context mContext;
 
@@ -28,12 +28,14 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + EstimateEntry.TABLE_NAME + " (" +
                     EstimateEntry._ID               + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     EstimateEntry.CUSTOMER_COLUMN   + " TEXT," +
+                    EstimateEntry.PERIOD_COLUMN     + " TEXT," +
                     EstimateEntry.CATEGORY_COLUMN   + " TEXT," +
                     EstimateEntry.PRODUCT_COLUMN    + " TEXT," +
                     EstimateEntry.STANDARD_COLUMN   + " TEXT," +
                     EstimateEntry.UNIT_COLUMN       + " TEXT," +
                     EstimateEntry.PRICE_COLUMN      + " INTEGER," +
                     EstimateEntry.COUNT_COLUMN      + " INTEGER," +
+                    EstimateEntry.SUBCOUNT_COLUMN   + " INTEGER," +
                     EstimateEntry.SUM_COULUMN       + " INTEGER," +
                     EstimateEntry.REG_DATE_COLUMN   + " TEXT)";
 
@@ -59,19 +61,26 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
 
     public Estimate getEsitmate(String reg_date) {
 
-        Cursor cursor = getWritableDatabase().query(EstimateEntry.TABLE_NAME, null, EstimateEntry.REG_DATE_COLUMN + " = ?", new String[]{reg_date}, null, null, null, null);
+        Cursor cursor = getWritableDatabase().query(EstimateEntry.TABLE_NAME,
+                null,
+                EstimateEntry.REG_DATE_COLUMN + " = ?",
+                new String[]{reg_date},
+                null,
+                null,
+                EstimateEntry.CATEGORY_COLUMN + " ASC",
+                null);
 
         Log.i(TAG, "ColumnCount>" + cursor.getColumnIndex(EstimateEntry.CUSTOMER_COLUMN));
         Log.i(TAG, "ColumnCount>" + cursor.getColumnName(1));
 
         Estimate estimate = new Estimate();
 
-        if (cursor.moveToFirst()) {
-            estimate.custmer    = cursor.getString(cursor.getColumnIndex(EstimateEntry.CUSTOMER_COLUMN));
-            estimate.reg_date   = cursor.getString(cursor.getColumnIndex(EstimateEntry.REG_DATE_COLUMN));
-        }
-
         while(cursor.moveToNext()) {
+
+            estimate.custmer    = cursor.getString(cursor.getColumnIndex(EstimateEntry.CUSTOMER_COLUMN));
+            estimate.period     = cursor.getString(cursor.getColumnIndex(EstimateEntry.PERIOD_COLUMN));
+            estimate.reg_date   = cursor.getString(cursor.getColumnIndex(EstimateEntry.REG_DATE_COLUMN));
+
             ProductPrice productPrice = new ProductPrice();
             productPrice._id        = cursor.getInt(cursor.getColumnIndex(EstimateEntry._ID));
             productPrice.category   = cursor.getString(cursor.getColumnIndex(EstimateEntry.CATEGORY_COLUMN));
@@ -80,6 +89,7 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
             productPrice.unit       = cursor.getString(cursor.getColumnIndex(EstimateEntry.UNIT_COLUMN));
             productPrice.price      = cursor.getInt(cursor.getColumnIndex(EstimateEntry.PRICE_COLUMN));
             productPrice.count      = cursor.getInt(cursor.getColumnIndex(EstimateEntry.COUNT_COLUMN));
+            productPrice.subCount   = cursor.getInt(cursor.getColumnIndex(EstimateEntry.SUBCOUNT_COLUMN));
             productPrice.sum        = cursor.getLong(cursor.getColumnIndex(EstimateEntry.SUM_COULUMN));
             estimate.addProduct(productPrice);
         }
@@ -87,20 +97,22 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
         return estimate;
     }
     
-    public long insertProduct(String customer, ProductPrice productPrice, String reg_date) {
+    public long insertProduct(Customer customer, ProductPrice productPrice) {
 
         if (customer == null) return  -1;
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(EstimateEntry.CUSTOMER_COLUMN, customer);
+        contentValues.put(EstimateEntry.CUSTOMER_COLUMN, customer.customer);
+        contentValues.put(EstimateEntry.PERIOD_COLUMN, customer.period);
         contentValues.put(EstimateEntry.CATEGORY_COLUMN, productPrice.category);
         contentValues.put(EstimateEntry.PRODUCT_COLUMN, productPrice.product);
         contentValues.put(EstimateEntry.STANDARD_COLUMN, productPrice.standard);
         contentValues.put(EstimateEntry.UNIT_COLUMN, productPrice.unit);
         contentValues.put(EstimateEntry.PRICE_COLUMN, productPrice.price);
         contentValues.put(EstimateEntry.COUNT_COLUMN, productPrice.count);
+        contentValues.put(EstimateEntry.SUBCOUNT_COLUMN, productPrice.subCount);
         contentValues.put(EstimateEntry.SUM_COULUMN, productPrice.sum);
-        contentValues.put(EstimateEntry.REG_DATE_COLUMN, reg_date);
+        contentValues.put(EstimateEntry.REG_DATE_COLUMN, customer.reg_date);
 
         return getWritableDatabase().insert(EstimateEntry.TABLE_NAME, null, contentValues);
     }
@@ -111,7 +123,7 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
 
         Cursor cursor   = getWritableDatabase().query(true,
                 EstimateEntry.TABLE_NAME,
-                new String[]{EstimateEntry.CUSTOMER_COLUMN, EstimateEntry.REG_DATE_COLUMN},
+                new String[]{EstimateEntry.CUSTOMER_COLUMN, EstimateEntry.PERIOD_COLUMN, EstimateEntry.REG_DATE_COLUMN},
                 null,
                 null,
                 null,
@@ -119,9 +131,9 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
                 EstimateEntry.REG_DATE_COLUMN + " DESC",
                 null);
         while (cursor.moveToNext()) {
-            Customer customer = new Customer();
-            customer.customer = cursor.getString(cursor.getColumnIndex(EstimateEntry.CUSTOMER_COLUMN));
-            customer.reg_date = cursor.getString(cursor.getColumnIndex(EstimateEntry.REG_DATE_COLUMN));
+            Customer customer = new Customer(cursor.getString(cursor.getColumnIndex(EstimateEntry.CUSTOMER_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(EstimateEntry.PERIOD_COLUMN)),
+                    cursor.getString(cursor.getColumnIndex(EstimateEntry.REG_DATE_COLUMN)));
             if (customer.customer != null) customers.add(customer);
         }
 
@@ -141,6 +153,7 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
         contentValues.put(EstimateEntry.UNIT_COLUMN, productPrice.unit);
         contentValues.put(EstimateEntry.PRICE_COLUMN, productPrice.price);
         contentValues.put(EstimateEntry.COUNT_COLUMN, productPrice.count);
+        contentValues.put(EstimateEntry.SUBCOUNT_COLUMN, productPrice.subCount);
         contentValues.put(EstimateEntry.SUM_COULUMN, productPrice.sum);
 
         return contentValues;

@@ -1,28 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tool="http://schemas.android.com/tools"
     android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tv_customer_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/colorDarkGray"
+        android:text="계약기간 : 2년 약정"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tool:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/tv_customer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="고객명"
-        app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/colorBlack"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tool:ignore="MissingConstraints" />
 
     <TextView
         android:id="@+id/tv_regdate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="12sp"
         android:textColor="@color/colorDarkGray"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_customer"
-        tool:text="2018/12/12 12:00"/>
+        android:textSize="12sp"
+        app:layout_constraintTop_toBottomOf="@id/tv_customer_period"
+        app:layout_constraintLeft_toLeftOf="@id/tv_customer_period"
+        tool:text="2018/12/12 12:00" />
 
 </android.support.constraint.ConstraintLayout>

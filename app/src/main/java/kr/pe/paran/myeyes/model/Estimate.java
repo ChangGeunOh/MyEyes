@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public class Estimate implements Serializable {
 
     public String custmer;
+    public String period;
     public String reg_date;
     public ArrayList<ProductPrice>  productPrices;
 

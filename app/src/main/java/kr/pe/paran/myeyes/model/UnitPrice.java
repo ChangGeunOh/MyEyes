@@ -23,13 +23,13 @@ public class UnitPrice {
 
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("[");
-        builder.append("_ID:" + _id + ",");
-        builder.append("category:" + category + ",");
-        builder.append("product:" + product + ",");
-        builder.append("standard:" + standard + ",");
-        builder.append("unit:" + unit + ",");
-        builder.append("price:" + price + "]");
-        return builder.toString();
+        return "UnitPrice{" +
+                "_id=" + _id +
+                ", category='" + category + '\'' +
+                ", product='" + product + '\'' +
+                ", standard='" + standard + '\'' +
+                ", unit='" + unit + '\'' +
+                ", price=" + price +
+                '}';
     }
 }
