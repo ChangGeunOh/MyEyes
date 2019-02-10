@@ -10,6 +10,7 @@ import android.util.Log;
 
 import java.util.ArrayList;
 
+import kr.pe.paran.myeyes.Utility;
 import kr.pe.paran.myeyes.model.Customer;
 import kr.pe.paran.myeyes.model.Estimate;
 import kr.pe.paran.myeyes.model.ProductPrice;
@@ -173,5 +174,33 @@ public class EstimateSQLiteOpenHelper extends SQLiteOpenHelper {
             Log.i(TAG, cursor.getString(cursor.getColumnIndex(EstimateEntry.CUSTOMER_COLUMN)));
     }
 
+    public void reCalculate(String reg_date, String period) {
+
+        Cursor cursor = getWritableDatabase().query(EstimateEntry.TABLE_NAME,
+                null,
+                EstimateEntry.REG_DATE_COLUMN + " = ? AND " + EstimateEntry.PRODUCT_COLUMN + " = ?",
+                new String[]{reg_date, "CCTV"},
+                null,
+                null,
+                EstimateEntry.CATEGORY_COLUMN + " ASC",
+                null);
+
+        Estimate estimate = new Estimate();
+
+        int cntCCTV = 0;
+        while(cursor.moveToNext()) {
+            cntCCTV += cursor.getInt(cursor.getColumnIndex(EstimateEntry.COUNT_COLUMN));
+        }
+        int unitPrice = Utility.getPriceCCTV(cntCCTV, Utility.isDiscount(period));
+
+
+        String sql = "UPDATE " + EstimateEntry.TABLE_NAME + " SET " +
+                EstimateEntry.PRICE_COLUMN + " = " + unitPrice + ", " +
+                EstimateEntry.SUM_COULUMN + " = " + unitPrice + " * " + EstimateEntry.COUNT_COLUMN +
+                " WHERE " + EstimateEntry.PRODUCT_COLUMN + " = 'CCTV'";
+        getWritableDatabase().execSQL(sql);
+
+//        UPDATE Reservation SET RoomNum = 2002 WHERE Name = '홍길동';
+    }
 
 }

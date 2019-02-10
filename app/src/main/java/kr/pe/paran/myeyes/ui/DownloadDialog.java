@@ -99,12 +99,16 @@ public class DownloadDialog extends DialogFragment {
     private void downloadFile() {
 
         String strUrl = RetrofitUrl.API_BASE_URL + mFileName;
-
+        Log.i(TAG, "filename>" + strUrl);
         RetrofitService.getRetrofit(getContext()).download(strUrl).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                DownloadFileTask downloadFileTask = new DownloadFileTask();
-                downloadFileTask.execute(response.body());
+                if (response.body() != null) {
+                    DownloadFileTask downloadFileTask = new DownloadFileTask();
+                    downloadFileTask.execute(response.body());
+                } else {
+                    onDismissDialog(-1);
+                }
             }
 
             @Override

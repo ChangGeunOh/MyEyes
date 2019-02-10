@@ -1,6 +1,8 @@
 package kr.pe.paran.myeyes.model;
 
-public class Customer {
+import java.io.Serializable;
+
+public class Customer implements Serializable {
 
     public String customer;
     public String period;

@@ -1,0 +1,19 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <PreferenceCategory android:title="사용자 정보">
+
+
+        <EditTextPreference
+            android:key="group"
+            android:summary="KT ㅇㅇ지사 ㅇㅇㅇ팀"
+            android:title="소속" />
+
+        <EditTextPreference
+            android:key="name"
+            android:summary="홍길동"
+            android:title="이름" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

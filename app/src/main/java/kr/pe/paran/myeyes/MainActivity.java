@@ -1,11 +1,15 @@
 package kr.pe.paran.myeyes;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -28,6 +32,7 @@ import kr.pe.paran.myeyes.ui.InfoActivity;
 import kr.pe.paran.myeyes.ui.NumberDialog;
 import kr.pe.paran.myeyes.ui.ProductListAdpater;
 import kr.pe.paran.myeyes.ui.ReportActivity;
+import kr.pe.paran.myeyes.ui.SettingsActivity;
 import kr.pe.paran.myeyes.ui.UnitActivity;
 
 public class MainActivity extends AppCompatActivity
@@ -102,8 +107,16 @@ public class MainActivity extends AppCompatActivity
         mCustomListView.setOnItemClickListener(this);
         mCustomListView.setOnItemLongClickListener(this);
 
-
+        Log.i(TAG, ">>>>>" + Utility.getWaterMark(this));
     }
+
+    private void test() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        for (String key : preferences.getAll().keySet()) {
+            Log.i(TAG, "Key>" + key);
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -138,9 +151,17 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
         } else if (id == R.id.action_report) {
             showReportActivity();
+        } else if (id == R.id.action_settings) {
+            showSettingsActivity();
         }
 
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showSettingsActivity() {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -180,10 +201,17 @@ public class MainActivity extends AppCompatActivity
             showBottomDialog(productPrice);
         } else {
             //
-            Customer customer = mCustomerAdapter.getItem(i);
-            deleteEstimate(customer);
+            final Customer customer = mCustomerAdapter.getItem(i);
+            new AlertDialog.Builder(this)
+                    .setMessage(customer.customer + " 고객님의 견적서를 삭제 하시겠습니까?")
+                    .setPositiveButton("삭제", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            deleteEstimate(customer);
+                        }
+                    })
+                    .create().show();
         }
-
         return true;
     }
 
@@ -208,6 +236,8 @@ public class MainActivity extends AppCompatActivity
         setTitle(customer.customer);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+        mEstimateDbHelper.reCalculate(customer.reg_date, customer.period);
 
         mEstimate = mEstimateDbHelper.getEsitmate(customer.reg_date);
         mProductListAdpater.setProductPrices(mEstimate.productPrices);
@@ -236,9 +266,7 @@ public class MainActivity extends AppCompatActivity
     private void showReportActivity() {
         if (mEstimate != null) {
             if (mEstimate.productPrices.size() > 0) {
-                Intent intent = new Intent(this, ReportActivity.class);
-                intent.putExtra("Estimate", mEstimate.reg_date);
-                startActivity(intent);
+                startActivity(ReportActivity.getIntent(this, new Customer(mEstimate.custmer, mEstimate.period, mEstimate.reg_date)));
             } else {
                 Utility.showMessage(this, "견적서 작성을 위해 자재등록 후 실행하세요");
             }
@@ -252,4 +280,5 @@ public class MainActivity extends AppCompatActivity
         Log.i(TAG, "onInputNumber>" + count);
         mBottomSheetDialog.setCount(count);
     }
+
 }

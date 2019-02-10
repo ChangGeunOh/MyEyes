@@ -1,5 +1,6 @@
 package kr.pe.paran.myeyes.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.graphics.pdf.PdfDocument;
@@ -7,9 +8,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -24,37 +27,55 @@ import java.util.ArrayList;
 import kr.pe.paran.myeyes.R;
 import kr.pe.paran.myeyes.Utility;
 import kr.pe.paran.myeyes.database.EstimateSQLiteOpenHelper;
+import kr.pe.paran.myeyes.model.Customer;
 import kr.pe.paran.myeyes.model.Estimate;
 import kr.pe.paran.myeyes.model.ProductPrice;
 
 public class ReportActivity extends AppCompatActivity {
 
-    private final String TAG = getClass().getSimpleName();
-
     public static final String ASSET_PATH = "file:///android_asset/";
+
+    private static final String TAG = ReportActivity.class.getSimpleName();
+    private static final String ARG_CUSTOMER = "customer";
 
     private WebView mWebView;
     private StringBuilder mHtmlTagBuilder;
+
+    private Customer        mCustomer;
     private long mTotalPrice = 0;
+
+
+    public static Intent getIntent(Context context, Customer customer) {
+        Intent intent = new Intent(context, ReportActivity.class);
+        intent.putExtra(ARG_CUSTOMER, customer);
+
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+
+        mCustomer   = (Customer) getIntent().getSerializableExtra(ARG_CUSTOMER);
 
 //        final Estimate estimate = (Estimate) getIntent().getSerializableExtra("Estimate");
 //        final Estimate estimate = getEstimate();
 
-        String reg_date = getIntent().getStringExtra("Estimate");
-        if (reg_date == null) {
+//        String reg_date = getIntent().getStringExtra("Estimate");
+        if (mCustomer.reg_date == null) {
             Utility.showMessage(this, "상품정보가 없습니다.");
             finish();
         }
         EstimateSQLiteOpenHelper estimateSQLiteOpenHelper = new EstimateSQLiteOpenHelper(this);
-        final Estimate estimate = estimateSQLiteOpenHelper.getEsitmate(reg_date);
+        final Estimate estimate = estimateSQLiteOpenHelper.getEsitmate(mCustomer.reg_date);
 
 
         setTitle(estimate.custmer);
@@ -93,31 +114,55 @@ public class ReportActivity extends AppCompatActivity {
         cntCategory.remove(start);
         cntCategory.add(start, count);
 
+        int cntSub = 0; long sumSub = 0; int subUnit = 0;
         mHtmlTagBuilder = new StringBuilder();
         for (int i = 0; i < estimate.productPrices.size(); i++) {
+
             ProductPrice productPrice = estimate.productPrices.get(i);
             mTotalPrice += productPrice.sum;
+            String strPrice = productPrice.product.equals("인건비") ? Utility.getFormated(productPrice.count) + " x " + Utility.getFormated(productPrice.subCount) : Utility.getFormated(productPrice.count);
+            productPrice.category += productPrice.category.equals("서비스") ? "<br> (월정액)" : "";
+
             if (cntCategory.get(i) > 0) {
+                cntSub = productPrice.count * (productPrice.subCount > 0 ? productPrice.subCount : 1);
+                sumSub = productPrice.sum;
                 mHtmlTagBuilder.append(String.format(row_first,
-                        cntCategory.get(i),
+                        cntCategory.get(i) + 1,
                         productPrice.category,
                         productPrice.product,
                         productPrice.standard,
+                        strPrice,
                         Utility.getFormated(productPrice.price),
-                        productPrice.count,
                         Utility.getFormated(productPrice.sum)));
             } else {
+                cntSub += productPrice.count * (productPrice.subCount > 0 ? productPrice.subCount : 1);
+                sumSub += productPrice.sum;
                 mHtmlTagBuilder.append(String.format(row_middle,
                         productPrice.product,
                         productPrice.standard,
+                        strPrice,
                         Utility.getFormated(productPrice.price),
-                        productPrice.count,
                         Utility.getFormated(productPrice.sum)));
+            }
+            //...................
+            if ((i + 1) == cntCategory.size() || cntCategory.get(i + 1) > 0) {
+                mHtmlTagBuilder.append(String.format(row_subsum,
+                        cntSub,
+                        "",
+                        Utility.getFormated(sumSub)));
             }
         }
         loadHtmlFile();
     }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        finish();
+
+        return super.onOptionsItemSelected(item);
+    }
 
     private void loadHtmlFile() {
 
@@ -130,7 +175,14 @@ public class ReportActivity extends AppCompatActivity {
         } catch (IOException e) {
         }
 
-        content = String.format(content, mHtmlTagBuilder.toString(), Utility.getFormated(mTotalPrice));
+
+        // Make HTML Tag,......
+        content = String.format(content, "약정기간 : " + mCustomer.period,
+                "고객명 : " + mCustomer.customer,
+                mHtmlTagBuilder.toString(),
+                Utility.getFormated(mTotalPrice),
+                Utility.getCurrentDateTime(),
+                Utility.getWaterMark(this));
 
         mWebView.loadDataWithBaseURL(ASSET_PATH, content.replace("!", "%"), "text/html", "utf-8", null);
         mWebView.requestFocusFromTouch();
@@ -147,20 +199,27 @@ public class ReportActivity extends AppCompatActivity {
     }
 
 
+    private static String row_subsum = "<tr>" +
+            "<td colspan=2>소 계</td>" +
+            "<td>%s</td>" +
+            "<td class='value_price'>%s</td>" +
+            "<td class='value_price'>%s</td>" +
+            "</tr>";
+
     private static String row_first = "<tr>" +
             "<td rowspan='%d'>%s</td>" +
             "<td>%s</td>" +
             "<td>%s</td>" +
+            "<td>%s</td>" +
             "<td class='value_price'>%s</td>" +
-            "<td>%d</td>" +
             "<td class='value_price'>%s</td>" +
             "</tr>";
 
     private static String row_middle = "<tr>" +
             "<td>%s</td>" +
             "<td>%s</td>" +
+            "<td>%s</td>" +
             "<td class='value_price'>%s</td>" +
-            "<td>%d</td>" +
             "<td class='value_price'>%s</td>" +
             "</tr>";
 
@@ -180,7 +239,7 @@ public class ReportActivity extends AppCompatActivity {
         pdfDocument.finishPage(page);
         try {
             pdfDocument.writeTo(getOutputStream(filename));
-            Utility.showMessage(this, customer + " 고객님의 GiGaEyes 견적서가 되었습니다.");
+            Utility.showMessage(this, customer + "고객님의 GiGAEyes 견적서가 생성 되었습니다.");
             sendEstimate(filename);
         } catch (IOException e) {
             e.printStackTrace();
@@ -227,83 +286,6 @@ public class ReportActivity extends AppCompatActivity {
         }
 
         return fileOutputStream;
-    }
-
-    private Estimate getEstimate() {
-
-        Estimate estimate = new Estimate("테스트");
-
-        ProductPrice productPrice = new ProductPrice();
-        productPrice.category = "노무비";
-        productPrice.product = "인건비";
-        productPrice.standard = "중급기술자";
-        productPrice.unit = "인";
-        productPrice.price = 180000;
-        productPrice.count = 1;
-        productPrice.sum = productPrice.count * productPrice.price;
-        estimate.addProduct(productPrice);
-
-        productPrice = new ProductPrice();
-        productPrice.category = "노무비";
-        productPrice.product = "인건비";
-        productPrice.standard = "초급기술자";
-        productPrice.unit = "인";
-        productPrice.price = 180000;
-        productPrice.count = 2;
-        productPrice.sum = productPrice.count * productPrice.price;
-        estimate.addProduct(productPrice);
-
-        productPrice = new ProductPrice();
-        productPrice.category = "서비스";
-        productPrice.product = "인터넷";
-        productPrice.standard = "기가인터넷";
-        productPrice.unit = "월";
-        productPrice.price = 35000;
-        productPrice.count = 3;
-        productPrice.sum = productPrice.count * productPrice.price;
-        estimate.addProduct(productPrice);
-
-        productPrice = new ProductPrice();
-        productPrice.category = "서비스";
-        productPrice.product = "인터넷";
-        productPrice.standard = "컴팩트인터넷";
-        productPrice.unit = "월";
-        productPrice.price = 30000;
-        productPrice.count = 2;
-        productPrice.sum = productPrice.count * productPrice.price;
-        estimate.addProduct(productPrice);
-
-        productPrice = new ProductPrice();
-        productPrice.category = "서비스";
-        productPrice.product = "CCTV";
-        productPrice.standard = "9-50";
-        productPrice.unit = "월";
-        productPrice.price = 9000;
-        productPrice.count = 5;
-        productPrice.sum = productPrice.count * productPrice.price;
-        estimate.addProduct(productPrice);
-
-        productPrice = new ProductPrice();
-        productPrice.category = "자재";
-        productPrice.product = "브라켓";
-        productPrice.standard = "돔";
-        productPrice.unit = "개";
-        productPrice.price = 3000;
-        productPrice.count = 2;
-        productPrice.sum = productPrice.count * productPrice.price;
-        estimate.addProduct(productPrice);
-
-        productPrice = new ProductPrice();
-        productPrice.category = "장비";
-        productPrice.product = "POE";
-        productPrice.standard = "48p";
-        productPrice.unit = "개";
-        productPrice.price = 636000;
-        productPrice.count = 1;
-        productPrice.sum = productPrice.count * productPrice.price;
-        estimate.addProduct(productPrice);
-
-        return estimate;
     }
 
 }

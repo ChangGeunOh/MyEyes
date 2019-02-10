@@ -1,10 +1,13 @@
 package kr.pe.paran.myeyes;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDialog;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -76,4 +79,28 @@ public class Utility {
         }
         return false;
     }
+
+    public static int getPriceCCTV(int cntCCTV, boolean isPeriodDiscount) {
+
+        if (cntCCTV > 100) {
+            return 8500 - (isPeriodDiscount ? 200 : 0);
+        }
+        else if (cntCCTV > 50) {
+            return 9000  - (isPeriodDiscount ? 200 : 0);
+        }
+
+        return 9500  - (isPeriodDiscount ? 200 : 0);
+    }
+
+    public static String getWaterMark(Context context) {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        return preferences.getString("group", "") + " " + preferences.getString("name", "");
+    }
+
+    public static String getCurrentDateTime() {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
+        return simpleDateFormat.format(new Date());
+    }
+
+
 }

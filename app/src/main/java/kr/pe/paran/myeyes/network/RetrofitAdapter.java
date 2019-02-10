@@ -34,9 +34,9 @@ public class RetrofitAdapter {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new CookiesReceivedInterceptor(context))
                 .addNetworkInterceptor(new CookiesAddInterceptor(context))
-                .connectTimeout(40, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
+                .connectTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS)
                 .build();
 
         /**
