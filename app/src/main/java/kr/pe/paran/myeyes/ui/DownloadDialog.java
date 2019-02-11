@@ -103,7 +103,7 @@ public class DownloadDialog extends DialogFragment {
         RetrofitService.getRetrofit(getContext()).download(strUrl).enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.body() != null) {
+                if (response.isSuccessful()) {
                     DownloadFileTask downloadFileTask = new DownloadFileTask();
                     downloadFileTask.execute(response.body());
                 } else {

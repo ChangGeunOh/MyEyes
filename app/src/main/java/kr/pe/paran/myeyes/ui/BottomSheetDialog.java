@@ -42,27 +42,24 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
 
     private BottomSheetListener mListener = null;
 
-    private View            mView;
-    private boolean         isEditMode;
-    private TextView        mTextViewNumber;
+    private View mView;
+    private boolean isEditMode;
+    private TextView mTextViewNumber;
 
-    private int             beforeCnt   = 0;
-    private boolean         isPeriodDiscount  = false;
-
-
+    private int beforeCnt = 0;
+    private boolean isPeriodDiscount = false;
 
 
     @SuppressLint("ValidFragment")
     public BottomSheetDialog(UnitPriceSQLiteOpenHelper unitPriceSQLiteOpenHelper, ProductPrice productPrice, boolean isDiscount) {
 
-        this.isPeriodDiscount   = isDiscount;
+        this.isPeriodDiscount = isDiscount;
         this.mOpenHelper = unitPriceSQLiteOpenHelper;
 
         if (productPrice == null) {
             isEditMode = false;
             this.mProductPrice = new ProductPrice();
-        }
-        else {
+        } else {
             isEditMode = true;
             this.mProductPrice = productPrice;
         }
@@ -84,8 +81,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
             }
         } else if (view.getId() == R.id.btn_add_number2) {
             mProductPrice.subCount++;
-        }
-        else {
+        } else {
             mProductPrice.subCount--;
             if (mProductPrice.subCount < 1) {
                 mProductPrice.subCount = 1;
@@ -105,8 +101,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
             }
         } else if (view.getId() == R.id.btn_add_number2) {
             mProductPrice.subCount += 10;
-        }
-        else {
+        } else {
             mProductPrice.subCount -= 10;
             if (mProductPrice.subCount < 1) {
                 mProductPrice.subCount = 1;
@@ -117,6 +112,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
 
     public interface BottomSheetListener {
         void onAddProductPrice(ProductPrice productPrice);
+
         void onRemoveProductPrice(int id);
     }
 
@@ -144,8 +140,8 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
         mTextViewNumber = mView.findViewById(R.id.tv_prouct_count);
         mTextViewNumber.findViewById(R.id.tv_prouct_count).setOnClickListener(this);
 
-        Button btnAdd       = mView.findViewById(R.id.btn_dialog_add);
-        Button btnCancel    = mView.findViewById(R.id.btn_dialog_canel);
+        Button btnAdd = mView.findViewById(R.id.btn_dialog_add);
+        Button btnCancel = mView.findViewById(R.id.btn_dialog_canel);
         btnAdd.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
 
@@ -200,7 +196,8 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
         if (mProductPrice.product.equals("인건비")) {
             strPrice = "단가 : " + Utility.getFormated(mProductPrice.price) +
                     "원, 수량 : " + Utility.getFormated(mProductPrice.count) +
-                    " x " + Utility.getFormated(mProductPrice.subCount);
+                    "명x" + Utility.getFormated(mProductPrice.subCount) +
+                    "일";
         } else {
             strPrice = "단가 : " + Utility.getFormated(mProductPrice.price) + "원, 수량 : " + Utility.getFormated(mProductPrice.count);
         }
@@ -226,19 +223,18 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
         } else {
             UnitPrice unitPrice = (UnitPrice) adapterView.getSelectedItem();
             if (!isEditMode) {
-                mProductPrice.count     = 1;
-                mProductPrice.sum       = mProductPrice.price;
+                mProductPrice.count = 1;
+                mProductPrice.sum = mProductPrice.price;
             }
-            mProductPrice.category  = unitPrice.category;
-            mProductPrice.product   = unitPrice.product;
-            mProductPrice.standard  = unitPrice.standard;
-            mProductPrice.unit      = unitPrice.unit;
-            mProductPrice.price     = unitPrice.price;
+            mProductPrice.category = unitPrice.category;
+            mProductPrice.product = unitPrice.product;
+            mProductPrice.standard = unitPrice.standard;
+            mProductPrice.unit = unitPrice.unit;
+            mProductPrice.price = unitPrice.price;
 
             if (unitPrice.product.equals("인건비")) {
                 showSubCount(true);
-            }
-            else {
+            } else {
                 showSubCount(false);
             }
         }
@@ -293,30 +289,30 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
                     message += isPeriodDiscount ? ", 약정기간 200원 할인" : " 할인";
                     Utility.showMessage(getContext(), message);
                 }
-            }
-            else if (totalCCTV > 50) {
-                mProductPrice.price = 9000  - (isPeriodDiscount ? 200 : 0);
+            } else if (totalCCTV > 50) {
+                mProductPrice.price = 9000 - (isPeriodDiscount ? 200 : 0);
                 if (beforeCnt <= 50 || beforeCnt > 100) {
                     // 50~100대 500원 할인, 약정기간 할인 200원 적용 (단가 : 8,800원/월)
-                    String message =  "50~100대 500원";
+                    String message = "50~100대 500원";
                     message += isPeriodDiscount ? ", 약정기간 200원 할인" : " 할인";
                     Utility.showMessage(getContext(), message);
                 }
-            }
-            else {
-                mProductPrice.price = 9500  - (isPeriodDiscount ? 200 : 0);
+            } else {
+                mProductPrice.price = 9500 - (isPeriodDiscount ? 200 : 0);
                 if (beforeCnt > 49 && isPeriodDiscount) {
                     // 약정기간 할인 200원 적용 (단가 : 9,300원/월)
                     Utility.showMessage(getContext(), "약정기간 200원 할인");
                 }
             }
-            beforeCnt   = totalCCTV;
+            beforeCnt = totalCCTV;
         }
 
         refreshView();
     }
 
     private void showSubCount(boolean isView) {
+        mView.findViewById(R.id.tv_count_label).setVisibility(isView ? View.VISIBLE : View.GONE);
+        mView.findViewById(R.id.tv_count_label2).setVisibility(isView ? View.VISIBLE : View.GONE);
         mView.findViewById(R.id.btn_add_number2).setVisibility(isView ? View.VISIBLE : View.GONE);
         mView.findViewById(R.id.btn_remove_number2).setVisibility(isView ? View.VISIBLE : View.GONE);
         mView.findViewById(R.id.tv_prouct_count2).setVisibility(isView ? View.VISIBLE : View.GONE);

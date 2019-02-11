@@ -120,7 +120,7 @@ public class ReportActivity extends AppCompatActivity {
 
             ProductPrice productPrice = estimate.productPrices.get(i);
             mTotalPrice += productPrice.sum;
-            String strPrice = productPrice.product.equals("인건비") ? Utility.getFormated(productPrice.count) + " x " + Utility.getFormated(productPrice.subCount) : Utility.getFormated(productPrice.count);
+            String strPrice = productPrice.product.equals("인건비") ? Utility.getFormated(productPrice.count) + "명 x " + Utility.getFormated(productPrice.subCount) + "일" : Utility.getFormated(productPrice.count);
             productPrice.category += productPrice.category.equals("서비스") ? "<br> (월정액)" : "";
 
             if (cntCategory.get(i) > 0) {

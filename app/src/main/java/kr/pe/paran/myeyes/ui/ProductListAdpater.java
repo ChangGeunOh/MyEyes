@@ -67,7 +67,8 @@ public class ProductListAdpater extends BaseAdapter {
         if (productPrice.product.equals("인건비")) {
             viewHolder.tvCount.setText("단가 : " + Utility.getFormated(productPrice.price) +
                     "원, 수량 : " + Utility.getFormated(productPrice.count) +
-                    " x " + Utility.getFormated(productPrice.subCount));
+                    "명 x " + Utility.getFormated(productPrice.subCount) +
+                    "일");
         }
         else {
             viewHolder.tvCount.setText("단가 : " + Utility.getFormated(productPrice.price) + "원, 수량 : " + Utility.getFormated(productPrice.count));
