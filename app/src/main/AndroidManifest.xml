@@ -16,6 +16,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.SettingsActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_settings" />
 
         <provider
@@ -30,6 +31,7 @@
 
         <activity
             android:name=".ui.IntroActivity"
+            android:screenOrientation="portrait"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -41,18 +43,22 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.UnitActivity"
             android:label="@string/title_activity_unit"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.InfoActivity"
             android:label="@string/title_activity_info"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.ReportActivity"
             android:label="@string/title_activity_report"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

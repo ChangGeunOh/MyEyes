@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -120,9 +121,19 @@ public class IntroActivity extends AppCompatActivity implements DownloadDialog.O
     }
 
     private void nextActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 100ms
+                Utility.hideProgress();
+                Intent intent = new Intent(IntroActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+
+            }
+        }, 1000);
+
+
     }
 
     private void versionCheck() {
@@ -132,10 +143,10 @@ public class IntroActivity extends AppCompatActivity implements DownloadDialog.O
         RetrofitService.getProperties(getApplicationContext()).get().enqueue(new Callback<Properties>() {
             @Override
             public void onResponse(Call<Properties> call, final Response<Properties> response) {
-                Utility.hideProgress();
                 try {
                     int currentVersion = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_META_DATA).versionCode;
                     if (currentVersion < response.body().versionCode) {
+                        Utility.hideProgress();
                         showUpdateDialog(response.body());
                     }
                     else {
@@ -149,7 +160,6 @@ public class IntroActivity extends AppCompatActivity implements DownloadDialog.O
 
             @Override
             public void onFailure(Call<Properties> call, Throwable t) {
-                Utility.hideProgress();
                 Log.i(TAG, t.getMessage());
                 Utility.showMessage(getApplicationContext(), "인터넷 연결상태를 확인 해 주세요.");
                 nextActivity();
