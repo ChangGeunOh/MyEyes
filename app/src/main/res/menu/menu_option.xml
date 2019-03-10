@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="kr.pe.paran.myeyes.ui.IntroActivity">
+    <item
+        android:id="@+id/action_option_add"
+        android:icon="@drawable/ic_add_white_48"
+        android:orderInCategory="100"
+        android:title="Add"
+        app:showAsAction="always" />
+</menu>

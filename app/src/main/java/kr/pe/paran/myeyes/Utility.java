@@ -11,13 +11,25 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.io.File;
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
+import kr.pe.paran.myeyes.model.OptionItem;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Utility {
 
+    private static final String TAG = Utility.class.getSimpleName();
 
     private static AppCompatDialog      mAppCompatDialog;
 
@@ -102,5 +114,75 @@ public class Utility {
         return simpleDateFormat.format(new Date());
     }
 
+    public static ArrayList<OptionItem> loadOptions(Context context) {
+        String[] options = context.getResources().getStringArray(R.array.option);
+        ArrayList<OptionItem> optionItems = new ArrayList<>();
+        for (int i = 0; i < options.length; i++) {
+            Log.i(TAG, options[i]);
+            ArrayList<OptionItem> optionsList = getOptions(context, options[i]);
+            Log.i(TAG, "OptionList size>" + optionsList.size());
+            for(OptionItem item : optionsList) {
+                Log.i(TAG, options[i] + " : " + item);
+                optionItems.add(item);
+            }
+        }
+
+        return optionItems;
+    }
+
+
+    private static ArrayList<OptionItem> getOptions(Context context, String key) {
+
+        ArrayList<OptionItem> optionItems = null;
+        String[] options = context.getResources().getStringArray(R.array.option);
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("Option", MODE_PRIVATE);
+        Gson gson   = new Gson();
+        String gsonValue = sharedPreferences.getString(key, "");
+
+        Log.i(TAG, "GsonValue>" + gsonValue);
+        if (!gsonValue.equals("")) {
+            Type type = new TypeToken< ArrayList < OptionItem >>() {}.getType();
+            optionItems = gson.fromJson(gsonValue, type);
+        }
+        else {
+            optionItems = getDefaultOptions(key);
+        }
+        Log.i(TAG, "OpteionItems>" + optionItems);
+
+        return optionItems;
+    }
+
+    public static void saveOptions(Context context, HashMap<String, ArrayList<OptionItem>> optiosHashMap) {
+        String[] options = context.getResources().getStringArray(R.array.option);
+
+        Gson gson = new Gson();
+        SharedPreferences.Editor editor = context.getSharedPreferences("Option", MODE_PRIVATE).edit();
+        for (int i = 0; i < options.length; i++) {
+            ArrayList<OptionItem> optionItems = optiosHashMap.get(options[i]);
+            String connectionsJSONString = gson.toJson(optionItems);
+            editor.putString(options[i], connectionsJSONString);
+        }
+        editor.commit();
+
+    }
+
+    public static ArrayList<OptionItem> getDefaultOptions(String key) {
+        Log.i(TAG, "getDefaultOptions>" + key);
+        ArrayList<OptionItem> items = new ArrayList<>();
+        if (key.equals("약정할인")) {
+            items.add(new OptionItem("약정할인","CCTV", "1년 약정", 0));
+            items.add(new OptionItem("약정할인","CCTV", "2년 약정", 0));
+            items.add(new OptionItem("약정할인","CCTV", "3년 약정", 0));
+            items.add(new OptionItem("약정할인","CCTV", "4년 약정", -200));
+            items.add(new OptionItem("약정할인","CCTV", "5년 약정", -400));
+        }
+        else if(key.equals("선택사항")) {
+            items.add(new OptionItem("저장공간","CCTV", "저장공간 15일 추가", 1500));
+            items.add(new OptionItem("저장공간","CCTV", "저장공산 15일 추가 (아파트 프로모션)", 500));
+        }
+
+        return items;
+    }
 
 }

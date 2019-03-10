@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -276,9 +277,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onInputNumber(int count) {
-        Log.i(TAG, "onInputNumber>" + count);
-        mBottomSheetDialog.setCount(count);
+    public void onInputNumber(DialogFragment dialogFragment, int count) {
+        Log.i(TAG, "Input Number>" + count);
+
+        if (dialogFragment.getTag().equals(BottomSheetDialog.TAG_DIALOG_NUMBER_ONE)) {
+            mBottomSheetDialog.setCount(count);
+        }
+        else {
+            mBottomSheetDialog.setSubCount(count);
+        }
     }
 
 }

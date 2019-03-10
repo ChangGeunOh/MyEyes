@@ -25,7 +25,7 @@ public class NumberDialog extends DialogFragment {
     private EditText mEditTextNumber;
 
     public interface OnNumberInputListener {
-        void onInputNumber(int count);
+        void onInputNumber(DialogFragment dialogFragment, int count);
     }
 
 
@@ -44,7 +44,7 @@ public class NumberDialog extends DialogFragment {
                 .setPositiveButton("입력", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        mListener.onInputNumber(numberFormat.getNumber());
+                        mListener.onInputNumber(NumberDialog.this, numberFormat.getNumber());
                         dismiss();
                     }
                 });

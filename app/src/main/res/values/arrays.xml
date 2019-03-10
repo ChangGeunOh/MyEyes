@@ -5,13 +5,19 @@
         <item>장비</item>
         <item>자재</item>
         <item>노무비</item>
-        <item>기타</item>
     </string-array>
 
     <string-array name="period">
         <item>1년 약정</item>
         <item>2년 약정</item>
         <item>3년 약정</item>
-        <item>4년 이상</item>
+        <item>4년 약정</item>
+        <item>5년 이상</item>
     </string-array>
+
+    <string-array name="option">
+        <item>약정할인</item>
+        <item>선택사항</item>
+    </string-array>
+
 </resources>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetDialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,9 +30,12 @@ import kr.pe.paran.myeyes.model.ProductPrice;
 import kr.pe.paran.myeyes.model.UnitPrice;
 
 @SuppressLint("ValidFragment")
-public class BottomSheetDialog extends BottomSheetDialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, NumberDialog.OnNumberInputListener, DoubleClick.DoubleClickListener {
+public class BottomSheetDialog extends BottomSheetDialogFragment implements View.OnClickListener, AdapterView.OnItemSelectedListener, DoubleClick.DoubleClickListener {
 
     private final String TAG = getClass().getSimpleName();
+
+    public static String TAG_DIALOG_NUMBER_ONE = "dialog_number1";
+    public static String TAG_DIALOG_NUMBER_TWO = "dialog_number2";
 
     private Spinner mSpinnerCategorry = null;
     private Spinner mSpinnerProduct = null;
@@ -63,11 +67,6 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
             isEditMode = true;
             this.mProductPrice = productPrice;
         }
-    }
-
-    @Override
-    public void onInputNumber(int count) {
-        Log.i(TAG, "Input Number>" + count);
     }
 
     @Override
@@ -139,6 +138,7 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
 
         mTextViewNumber = mView.findViewById(R.id.tv_prouct_count);
         mTextViewNumber.findViewById(R.id.tv_prouct_count).setOnClickListener(this);
+        mView.findViewById(R.id.tv_prouct_count2).setOnClickListener(this);
 
         Button btnAdd = mView.findViewById(R.id.btn_dialog_add);
         Button btnCancel = mView.findViewById(R.id.btn_dialog_canel);
@@ -174,7 +174,10 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
             mListener.onAddProductPrice(mProductPrice);
             dismiss();
         } else if (view.getId() == R.id.tv_prouct_count) {
-            showNumberDialog();
+            showNumberDialog(view);
+        } else if (view.getId() == R.id.tv_prouct_count2) {
+            Log.i(TAG, "Product Count... 2");
+            showNumberDialog(view);
         } else {
             if (isEditMode) {
                 mListener.onRemoveProductPrice(mProductPrice._id);
@@ -256,15 +259,21 @@ public class BottomSheetDialog extends BottomSheetDialogFragment implements View
         }
     }
 
+    private void showNumberDialog(View view) {
+        NumberDialog numberDialog = new NumberDialog();
+        numberDialog.show(getFragmentManager(), view.getId() == R.id.tv_prouct_count ? TAG_DIALOG_NUMBER_ONE : TAG_DIALOG_NUMBER_TWO);
+    }
+
     public void setCount(int count) {
         mProductPrice.count = count;
         reCalculateUnitPrice();
     }
 
-    private void showNumberDialog() {
-        NumberDialog numberDialog = new NumberDialog();
-        numberDialog.show(getFragmentManager(), "TAG_NUMBER_DIALOG");
+    public void setSubCount(int count) {
+        mProductPrice.subCount = count;
+        reCalculateUnitPrice();
     }
+
 
     private void reCalculateUnitPrice() {
 
